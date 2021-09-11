@@ -307,7 +307,8 @@
     "nok": "Norwegian krone",
     "usd": "United States Dollar",
     "zar": "South African Rand",
-    "inr": "Indian rupee"
+    "inr": "Indian rupee",
+    "dkk": "Danish krone"
   },
   "currency_drop_down": {
     "hint": "Select as the main currency",
@@ -444,6 +445,16 @@
     "hint": "* Modules that are activated for all addresses will not appear here",
     "subtitle": "Select which modules should be queried for this account",
     "title": "Enabled modules"
+  },
+  "nft_gallery": {
+    "empty_filter": "No NFTs matching the filter parameters",
+    "empty_subtitle": "No NFTs have been detected",
+    "empty_title": "No NFTs detected",
+    "loading": "Loading NFTs",
+    "refresh_tooltip": "Reload NFTs",
+    "select_collection": "Select collection",
+    "select_account": "Select account",
+    "upgrade": "Displaying {limit} NFTs. To view more please upgrade to {link}"
   },
   "no_filter_available": {
     "hint": {
@@ -2012,6 +2023,11 @@
           "message": "Failure to delete a queriable address: {message}"
         }
       },
+      "fetch_nfts": {
+        "task": {
+          "title": "Querying NFTs"
+        }
+      },
       "fetch_prices": {
         "error": {
           "message": "Failed to fetch prices: {error}",
@@ -2151,6 +2167,7 @@
     },
     "defi": "DeFi",
     "manage_prices": "Manage Prices",
+    "nfts": "NFTs",
     "statistics": "Statistics",
     "profit_loss_report": "Profit and Loss Report",
     "defi_sub": {
@@ -2644,6 +2661,14 @@
       "import_transactions": "transactions",
       "name": "Nexo",
       "line_one": "[Experimental] If you find an issue with the imported data let us know so we can adapt the code accordingly.",
+      "note": "Important notes for importing data from {0}'s CSV exports."
+    },
+    "shapeshift": {
+      "import": "Import {0} from ShapeShift",
+      "import_trade": "trades",
+      "name": "ShapeShift",
+      "line_one": "[Experimental] If you find an issue with the imported data, let us know so we can adapt the code accordingly.",
+      "line_two": "ShapeShift lets you export a trades file. Trades will be imported from the file that only contains trades.",
       "note": "Important notes for importing data from {0}'s CSV exports."
     },
     "description": "You can manually import data from the services below by dragging the file on the respective area or clicking the select button.",

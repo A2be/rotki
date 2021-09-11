@@ -119,45 +119,44 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       ...connectedExchanges.map(exchange => exchange.location)
     ];
 
-    const fetchLocation: (
-      location: TradeLocation
-    ) => Promise<void> = async location => {
-      const { taskId } = await api.history.trades(
-        location,
-        source === FETCH_FROM_CACHE
-      );
-      const task = createTask<LocationRequestMeta>(taskId, taskType, {
-        title: i18n.tc('actions.trades.task.title'),
-        description: i18n.tc('actions.trades.task.description', undefined, {
-          exchange: exchangeName(location)
-        }),
-        ignoreResult: false,
-        location: location,
-        numericKeys: tradeNumericKeys
-      });
+    const fetchLocation: (location: TradeLocation) => Promise<void> =
+      async location => {
+        const { taskId } = await api.history.trades(
+          location,
+          source === FETCH_FROM_CACHE
+        );
+        const task = createTask<LocationRequestMeta>(taskId, taskType, {
+          title: i18n.tc('actions.trades.task.title'),
+          description: i18n.tc('actions.trades.task.description', undefined, {
+            exchange: exchangeName(location)
+          }),
+          ignoreResult: false,
+          location: location,
+          numericKeys: tradeNumericKeys
+        });
 
-      commit('tasks/add', task, { root: true });
+        commit('tasks/add', task, { root: true });
 
-      const { result } = await taskCompletion<
-        LimitedResponse<EntryWithMeta<Trade>>,
-        TaskMeta
-      >(taskType, `${taskId}`);
+        const { result } = await taskCompletion<
+          LimitedResponse<EntryWithMeta<Trade>>,
+          TaskMeta
+        >(taskType, `${taskId}`);
 
-      const trades = [
-        ...state.trades.data.filter(trade => trade.location !== location),
-        ...result.entries.map(({ entry, ignoredInAccounting }) => ({
-          ...entry,
-          ignoredInAccounting
-        }))
-      ];
-      const data: HistoricData<TradeEntry> = {
-        data: trades,
-        found: result.entriesFound,
-        limit: result.entriesLimit
+        const trades = [
+          ...state.trades.data.filter(trade => trade.location !== location),
+          ...result.entries.map(({ entry, ignoredInAccounting }) => ({
+            ...entry,
+            ignoredInAccounting
+          }))
+        ];
+        const data: HistoricData<TradeEntry> = {
+          data: trades,
+          found: result.entriesFound,
+          limit: result.entriesLimit
+        };
+        commit(HistoryMutations.SET_TRADES, data);
+        setStatus(Status.PARTIALLY_LOADED);
       };
-      commit(HistoryMutations.SET_TRADES, data);
-      setStatus(Status.PARTIALLY_LOADED);
-    };
 
     const onError: (location: TradeLocation, message: string) => void = (
       location,
@@ -198,7 +197,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
         await api.history.addExternalTrade(trade)
       );
       success = true;
-    } catch (e) {
+    } catch (e: any) {
       message = e.message;
     }
     return { success, message };
@@ -221,7 +220,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       };
       commit(HistoryMutations.UPDATE_TRADE, payload);
       success = true;
-    } catch (e) {
+    } catch (e: any) {
       message = e.message;
     }
     return { success, message };
@@ -238,7 +237,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       if (success) {
         commit(HistoryMutations.DELETE_TRADE, tradeId);
       }
-    } catch (e) {
+    } catch (e: any) {
       message = e.message;
     }
     return { success, message };
@@ -286,52 +285,51 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       .map(({ location }) => location)
       .filter(uniqueStrings);
 
-    const fetchLocation: (
-      location: TradeLocation
-    ) => Promise<void> = async location => {
-      const { taskId } = await api.history.assetMovements(
-        location,
-        source === FETCH_FROM_CACHE
-      );
-      const task = createTask<LocationRequestMeta>(taskId, taskType, {
-        title: i18n.tc('actions.asset_movements.task.title'),
-        description: i18n.tc(
-          'actions.asset_movements.task.description',
-          undefined,
-          {
-            exchange: exchangeName(location)
-          }
-        ),
-        ignoreResult: false,
-        location: location,
-        numericKeys: movementNumericKeys
-      });
+    const fetchLocation: (location: TradeLocation) => Promise<void> =
+      async location => {
+        const { taskId } = await api.history.assetMovements(
+          location,
+          source === FETCH_FROM_CACHE
+        );
+        const task = createTask<LocationRequestMeta>(taskId, taskType, {
+          title: i18n.tc('actions.asset_movements.task.title'),
+          description: i18n.tc(
+            'actions.asset_movements.task.description',
+            undefined,
+            {
+              exchange: exchangeName(location)
+            }
+          ),
+          ignoreResult: false,
+          location: location,
+          numericKeys: movementNumericKeys
+        });
 
-      commit('tasks/add', task, { root: true });
+        commit('tasks/add', task, { root: true });
 
-      const { result } = await taskCompletion<
-        LimitedResponse<EntryWithMeta<AssetMovement>>,
-        TaskMeta
-      >(taskType, `${taskId}`);
+        const { result } = await taskCompletion<
+          LimitedResponse<EntryWithMeta<AssetMovement>>,
+          TaskMeta
+        >(taskType, `${taskId}`);
 
-      const movements = [
-        ...state.assetMovements.data.filter(
-          movement => movement.location !== location
-        ),
-        ...result.entries.map(({ entry, ignoredInAccounting }) => ({
-          ...entry,
-          ignoredInAccounting: ignoredInAccounting
-        }))
-      ];
+        const movements = [
+          ...state.assetMovements.data.filter(
+            movement => movement.location !== location
+          ),
+          ...result.entries.map(({ entry, ignoredInAccounting }) => ({
+            ...entry,
+            ignoredInAccounting: ignoredInAccounting
+          }))
+        ];
 
-      const data: HistoricData<AssetMovementEntry> = {
-        data: movements,
-        limit: result.entriesLimit,
-        found: result.entriesFound
+        const data: HistoricData<AssetMovementEntry> = {
+          data: movements,
+          limit: result.entriesLimit,
+          found: result.entriesFound
+        };
+        commit(HistoryMutations.SET_MOVEMENTS, data);
+        setStatus(Status.PARTIALLY_LOADED);
       };
-      commit(HistoryMutations.SET_MOVEMENTS, data);
-      setStatus(Status.PARTIALLY_LOADED);
-    };
 
     const onError: (location: TradeLocation, message: string) => void = (
       location,
@@ -350,10 +348,12 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
     };
 
     await Promise.all(
-      ([
-        ...(source !== FETCH_FROM_SOURCE ? EXTERNAL_EXCHANGES : []),
-        ...locations
-      ] as TradeLocation[]).map(location =>
+      (
+        [
+          ...(source !== FETCH_FROM_SOURCE ? EXTERNAL_EXCHANGES : []),
+          ...locations
+        ] as TradeLocation[]
+      ).map(location =>
         fetchLocation(location).catch(e => onError(location, e.message))
       )
     );
@@ -535,7 +535,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
         found: result.entriesFound
       };
       commit(HistoryMutations.SET_LEDGER_ACTIONS, data);
-    } catch (e) {
+    } catch (e: any) {
       const message = i18n
         .t('actions.ledger_actions.error.description', {
           error: e.message
@@ -569,7 +569,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
         identifier
       } as LedgerAction);
       return { success: true };
-    } catch (e) {
+    } catch (e: any) {
       return { success: false, message: e.message };
     }
   },
@@ -590,7 +590,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       };
       commit(HistoryMutations.SET_LEDGER_ACTIONS, data);
       return { success: true };
-    } catch (e) {
+    } catch (e: any) {
       return { success: false, message: e.message };
     }
   },
@@ -611,7 +611,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       };
       commit(HistoryMutations.SET_LEDGER_ACTIONS, data);
       return { success: true };
-    } catch (e) {
+    } catch (e: any) {
       return { success: false, message: e.message };
     }
   },
@@ -626,7 +626,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       const entries = result[type];
       assert(entries, `expected entry for ${type} but there where non`);
       strings = entries;
-    } catch (e) {
+    } catch (e: any) {
       commit(
         'setMessage',
         {
@@ -711,7 +711,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
     try {
       const result = await api.unignoreActions(actionIds, type);
       strings = result[type] ?? [];
-    } catch (e) {
+    } catch (e: any) {
       commit(
         'setMessage',
         {
@@ -875,7 +875,7 @@ export const actions: ActionTree<HistoryState, RotkehlchenState> = {
       const { result } = await taskCompletion<GitcoinGrants, TaskMeta>(type);
 
       return { result, message: '' };
-    } catch (e) {
+    } catch (e: any) {
       return {
         result: {},
         message: e.message

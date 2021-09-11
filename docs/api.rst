@@ -1102,7 +1102,7 @@ Query the historical price of assets
               "to_asset": "USD",
               "timestamp": 1611166335,
               "price": "1.20"
-            }, 
+            },
             {
               "from_asset": "_ceth_0xD533a949740bb3306d119CC777fa900bA034cd52",
               "to_asset": "USD",
@@ -6117,7 +6117,7 @@ Getting Liquity historical data
    :resjson int timestamp: The unix timestamp at which the event occured.
    :resjson string tx: The transaction hash of the event.
    :resjson object debt_after: Debt in the Trove after the operation
-   :resjson object collateral_after: Amount, asset and usd value of collateral at the Trove 
+   :resjson object collateral_after: Amount, asset and usd value of collateral at the Trove
    :resjson object debt_delta: Amount, asset and usd value of debt that the operation changed.
    :resjson object collateral_delta: Amount, asset and usd value of collateral that the operation changed.
    :resjson string trove_operation: The operation that happened in the change. Can be ``Open Trove``, ``Close Trove``, ``Adjust Trove``, ``Accrue Rewards``, ``Liquidation In Normal Mode``, ``Liquidation In Recovery Mode``, ``Redeem Collateral``
@@ -7123,6 +7123,62 @@ Getting Eth2 Staking deposits
 
    :statuscode 200: Eth2 staking deposits succesfully queried
    :statuscode 409: User is not logged in. Or eth2 module is not activated.
+   :statuscode 500: Internal rotki error.
+   :statuscode 502: An external service used in the query such as etherscan could not be reached or returned unexpected response.
+
+
+Getting Pickle's DILL balances
+==============================
+
+.. http:get:: /api/(version)/blockchains/ETH/modules/pickle/dill
+
+   Doing a GET on the pickle's DILL balances resource will return the balances that the user has locked with the rewards that can be claimed.
+
+   .. note::
+      This endpoint can also be queried asynchronously by using ``"async_query": true``
+
+   .. note::
+      This endpoint also accepts parameters as query arguments.
+
+   **Example Request**:
+
+   .. http:example:: curl wget httpie python-requests
+
+      GET /api/1/blockchains/ETH/modules/pickle/dill HTTP/1.1
+      Host: localhost:5042
+
+   :reqjson bool async_query: Boolean denoting whether this is an asynchronous query or not
+
+   **Example Response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+            "result": {
+                "0x5c4D8CEE7dE74E31cE69E76276d862180545c307": {
+                    "locked_amount": {
+                        "amount": "4431.204412216798860222",
+                        "usd_value": "43735.98754857980475039114",
+                        "asset": "_ceth_0x429881672B9AE42b8EbA0E26cD9C73711b891Ca5"
+                    },
+                    "pending_rewards": {
+                        "amount": "82.217560698031032969",
+                        "usd_value": "811.48732408956629540403",
+                        "asset": "_ceth_0x429881672B9AE42b8EbA0E26cD9C73711b891Ca5"
+                    },
+                    "locked_until": 1755129600
+                }
+            },
+            "message": ""
+        }
+
+   :resjson object result: A mapping of all accounts that currently have Pickle locked to keys ``locked_amount``,  ``pending_rewards`` and ``locked_until``
+
+   :statuscode 200: Pickle balances succesfully queried.
+   :statuscode 409: User is not logged in or Pickle module is not activated.
    :statuscode 500: Internal rotki error.
    :statuscode 502: An external service used in the query such as etherscan could not be reached or returned unexpected response.
 
@@ -8658,7 +8714,7 @@ Data imports
 
       {"source": "cointracking.info", "filepath": "/path/to/data/file"}
 
-   :reqjson str source: The source of the data to import. Valid values are ``"cointracking.info"``, ``"cryptocom"``, ``"blockfi-transactions"``, ``"blockfi-trades"``, ``"nexo"``, ``"gitcoin"``.
+   :reqjson str source: The source of the data to import. Valid values are ``"cointracking.info"``, ``"cryptocom"``, ``"blockfi-transactions"``, ``"blockfi-trades"``, ``"nexo"``, ``"gitcoin"``, ``"shapeshift-trades"``.
    :reqjson str filepath: The filepath to the data for importing
 
    **Example Response**:
@@ -9006,26 +9062,30 @@ Querying  NFTs
       HTTP/1.1 200 OK
       Content-Type: application/json
 
-      { "result":
-            "addresses": {
-	        "0xeE3766e4F996DC0e0F8c929954EAAFef3441de87": [{
-	            "token_identifier": "8636",
-	            "name": "BASTARD GAN PUNK V2 #8636",
-	            "background_color": null,
-	            "image_url": "https://lh3.googleusercontent.com/kwF-39qZlluEalQnNv-yMxbntzNdc3g00pK2xALkpoir9ooWttVUO2hVFWOgPtOkJOHufYRajfn-nNFdjruRQ4YaMgOYHEB8E4CdjBk",
-	            "external_link": "https://www.bastardganpunks.club/v2/8636",
-	            "price_eth": "0.025",
-	            "price_usd": "250",
+      {
+        "result": {
+          "addresses": {
+            "0xeE3766e4F996DC0e0F8c929954EAAFef3441de87": [
+              {
+                "token_identifier": "8636",
+                "name": "BASTARD GAN PUNK V2 #8636",
+                "background_color": null,
+                "image_url": "https://lh3.googleusercontent.com/kwF-39qZlluEalQnNv-yMxbntzNdc3g00pK2xALkpoir9ooWttVUO2hVFWOgPtOkJOHufYRajfn-nNFdjruRQ4YaMgOYHEB8E4CdjBk",
+                "external_link": "https://www.bastardganpunks.club/v2/8636",
+                "price_eth": "0.025",
+                "price_usd": "250",
                 "collection": {
-                    "name": "BASTARD GAN PUNKS V2",
-                    "banner_image": "https://lh3.googleusercontent.com/InX38GA4YmuR2ukDhN0hjf8-Qj2U3Tdw3wD24IsbjuXNtrTZXNwWiIeWR9bJ_-rEUOnQgkpLbj71TDKrzNzHLHkOSRdLo8Yd2tE3_jg=s2500",
-                    "description": "VERSION 2 OF BASTARD GAN PUNKS ARE COOLER, BETTER AND GOOFIER THAN BOTH BOOMER CRYPTOPUNKS & VERSION 1 BASTARD GAN PUNKS. THIS TIME, ALL CRYPTOPUNK ATTRIBUTES ARE EXTRACTED AND A NEW DATASET OF ALL COMBINATIONS OF THEM ARE TRAINED WITH GAN TO GIVE BIRTH TO EVEN MORE BADASS ONES. ALSO EACH ONE HAS A UNIQUE STORY GENERATED FROM MORE THAN 10K PUNK & EMO SONG LYRICS VIA GPT-2 LANGUAGE PROCESSING ALGORITHM. \r\n\r\nBASTARDS ARE SLOWLY DEGENERATING THE WORLD. ADOPT ONE TO KICK EVERYONE'S ASSES!\r\n\r\nDISCLAIMER: THIS PROJECT IS NOT AFFILIATED WITH LARVA LABS",
-                    "large_image": "https://lh3.googleusercontent.com/vF8johTucYy6yycIOJTM94LH-wcDQIPTn9-eKLMbxajrm7GZfJJWqxdX6uX59pA4n4n0QNEn3bh1RXcAFLeLzJmq79aZmIXVoazmVw=s300"
+                  "name": "BASTARD GAN PUNKS V2",
+                  "banner_image": "https://lh3.googleusercontent.com/InX38GA4YmuR2ukDhN0hjf8-Qj2U3Tdw3wD24IsbjuXNtrTZXNwWiIeWR9bJ_-rEUOnQgkpLbj71TDKrzNzHLHkOSRdLo8Yd2tE3_jg=s2500",
+                  "description": "VERSION 2 OF BASTARD GAN PUNKS ARE COOLER, BETTER AND GOOFIER THAN BOTH BOOMER CRYPTOPUNKS & VERSION 1 BASTARD GAN PUNKS. THIS TIME, ALL CRYPTOPUNK ATTRIBUTES ARE EXTRACTED AND A NEW DATASET OF ALL COMBINATIONS OF THEM ARE TRAINED WITH GAN TO GIVE BIRTH TO EVEN MORE BADASS ONES. ALSO EACH ONE HAS A UNIQUE STORY GENERATED FROM MORE THAN 10K PUNK & EMO SONG LYRICS VIA GPT-2 LANGUAGE PROCESSING ALGORITHM. \r\n\r\nBASTARDS ARE SLOWLY DEGENERATING THE WORLD. ADOPT ONE TO KICK EVERYONE'S ASSES!\r\n\r\nDISCLAIMER: THIS PROJECT IS NOT AFFILIATED WITH LARVA LABS",
+                  "large_image": "https://lh3.googleusercontent.com/vF8johTucYy6yycIOJTM94LH-wcDQIPTn9-eKLMbxajrm7GZfJJWqxdX6uX59pA4n4n0QNEn3bh1RXcAFLeLzJmq79aZmIXVoazmVw=s300"
                 }
-		}]
-	    },
-            "entries_found": 95,
-            "entries_limit": 500,
+              }
+            ]
+          },
+          "entries_found": 95,
+          "entries_limit": 500
+        },
         "message": ""
       }
 

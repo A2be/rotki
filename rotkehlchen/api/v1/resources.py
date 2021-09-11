@@ -240,8 +240,9 @@ class ExchangeRatesResource(BaseResource):
     get_schema = ExchangeRatesSchema()
 
     @use_kwargs(get_schema, location='json_and_query')
-    def get(self, currencies: List[Asset], async_query: bool) -> Response:
-        return self.rest_api.get_exchange_rates(given_currencies=currencies, async_query=async_query)  # noqa: E501
+    def get(self, currencies: List[Optional[Asset]], async_query: bool) -> Response:
+        valid_currencies = [currency for currency in currencies if currency is not None]
+        return self.rest_api.get_exchange_rates(given_currencies=valid_currencies, async_query=async_query)  # noqa: E501
 
 
 class ExchangesResource(BaseResource):
@@ -1521,6 +1522,15 @@ class LiquityTrovesHistory(BaseResource):
             from_timestamp=from_timestamp,
             to_timestamp=to_timestamp,
         )
+
+
+class PickleDillResource(BaseResource):
+
+    get_schema = AsyncQueryArgumentSchema()
+
+    @use_kwargs(get_schema, location='json_and_query')
+    def get(self, async_query: bool) -> Response:
+        return self.rest_api.get_dill_balance(async_query=async_query)
 
 
 class BalancerBalancesResource(BaseResource):

@@ -33,7 +33,11 @@
     </v-row>
     <v-row align="center" justify="center">
       <p
-        class="text-center font-weight-light progress-screen__progress__description"
+        class="
+          text-center
+          font-weight-light
+          progress-screen__progress__description
+        "
       >
         <slot name="message" />
       </p>
@@ -66,7 +70,7 @@ export default class ProgressScreen extends Vue {
     try {
       const number = parseFloat(this.progress);
       return number.toFixed(2);
-    } catch (e) {
+    } catch (e: any) {
       return this.progress;
     }
   }
