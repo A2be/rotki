@@ -1030,6 +1030,7 @@ You can edit any of your blockchain accounts and add a label. The label is uniqu
 
 By pressing the edit button for the account you can also add tags to the blockchain account. If you want to create a new tag or edit an existing one you can open the tag manager and choose the name, description and colors of the tag.
 
+You may edit your existing tags in the "Tag manager" by simply pressing the edit button on any account, and selecting an existing tag to edit, or create a new one.
 
 Filtering by tags
 =====================
