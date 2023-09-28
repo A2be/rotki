@@ -941,7 +941,8 @@ For every evm address it is possible to trigger the process of detecting tokens 
 History events
 =====================
 
-Rotki is capable of pulling and decoding a bunch of different events, ranging from EVM chain transactions to exchanges events and more. When you visit the ``History Events`` section the process to obtain all the information will start. You will be able to check the status in an informative breakdown per blockchain address. Free users are limited to a number of latest events.
+Rotki is capable of pulling and decoding a bunch of different events from EVM chains it supports, ranging from EVM chain transactions to exchanges events and more. When you visit the ``History Events`` section the process to obtain all the information will start. You will be able to check the status in an informative breakdown per EVM blockchain address. 
+The Avalanche (EVM) blockchain is not yet supported, nor are Bitcoin historical events.  Free users are limited to a number of latest events.
 
 .. image:: images/events_query_process.png
    :alt: History events query status breakdown
